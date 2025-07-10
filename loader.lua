@@ -90,18 +90,20 @@ button.TextStrokeTransparency = 0.8
 button.BackgroundTransparency = 0.1
 button.ClipsDescendants = true
 
--- ⏱️ Cooldown Logic Before Action
-button.MouseButton1Click:Connect(function()
-    button.Active = false
-    button.Text = "Starting in 3..."
-    task.wait(1)
-    button.Text = "Starting in 2..."
-    task.wait(1)
-    button.Text = "Starting in 1..."
-    task.wait(1)
+-- ⏱️ Cooldown logic (30 seconds)
+local isOnCooldown = false
 
+button.MouseButton1Click:Connect(function()
+    if isOnCooldown then return end
+    isOnCooldown = true
     randomizeESP()
 
+    -- Start 30s cooldown
+    for i = 30, 1, -1 do
+        button.Text = "Cooldown: " .. i .. "s"
+        task.wait(1)
+    end
+
     button.Text = "Randomize ESP"
-    button.Active = true
+    isOnCooldown = false
 end)
