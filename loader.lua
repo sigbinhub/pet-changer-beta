@@ -1,25 +1,145 @@
--- Pet Changer by AnyDev | Accurate Dinosaur & Primal Egg Support
+if identifyexecutor() == 'Delta' then
+    for _, v in pairs(game:GetService("CoreGui"):GetChildren()) do
+        pcall(function()
+            v:Destroy()
+        end)
+    end
+
+    local gui = Instance.new("ScreenGui")
+    gui.Name = "WarningGUI"
+    gui.IgnoreGuiInset = true
+    gui.ResetOnSpawn = false
+    if syn and syn.protect_gui then
+        syn.protect_gui(gui)
+    end
+    gui.Parent = game:GetService("CoreGui")
+
+    local background = Instance.new("Frame")
+    background.Size = UDim2.new(1, 0, 1, 0)
+    background.Position = UDim2.new(0, 0, 0, 0)
+    background.BackgroundColor3 = Color3.new(0, 0, 0)
+    background.BorderSizePixel = 0
+    background.Parent = gui
+
+    local container = Instance.new("Frame")
+    container.AnchorPoint = Vector2.new(0.5, 0.5)
+    container.Position = UDim2.new(0.5, 0, 0.45, 0)
+    container.Size = UDim2.new(0.9, 0, 0.6, 0)
+    container.BackgroundTransparency = 1
+    container.Parent = background
+
+    local aspect = Instance.new("UIAspectRatioConstraint")
+    aspect.AspectRatio = 9 / 16
+    aspect.Parent = container
+
+    local executors = {
+        {name = "KRNL", link = "https://krnl.cat/"},
+        {name = "Codex", link = "https://codex.lol/"},
+        {name = "Arceus X", link = "https://spdmteam.com/index"},
+        {name = "Fluxus", link = "https://fluxus.team/download/"},
+    }
+
+    local buttonsContainer = Instance.new("Frame")
+    buttonsContainer.Size = UDim2.new(1, 0, 0, #executors * 60)
+    buttonsContainer.BackgroundTransparency = 1
+    buttonsContainer.Parent = container
+
+    local grid = Instance.new("UIGridLayout")
+    grid.CellSize = UDim2.new(0.9, 0, 0, 50)
+    grid.CellPadding = UDim2.new(0.05, 0, 0, 15)
+    grid.FillDirectionMaxCells = 1
+    grid.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    grid.VerticalAlignment = Enum.VerticalAlignment.Top
+    grid.SortOrder = Enum.SortOrder.LayoutOrder
+    grid.Parent = buttonsContainer
+
+    for _, exec in ipairs(executors) do
+        local btn = Instance.new("TextButton")
+        btn.Text = "Copy " .. exec.name .. " Link"
+        btn.TextScaled = true
+        btn.Font = Enum.Font.SourceSansBold
+        btn.TextColor3 = Color3.new(1, 1, 1)
+        btn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        btn.BorderSizePixel = 0
+        btn.AutoButtonColor = true
+        btn.Size = UDim2.new(1, 0, 0, 50)
+        btn.Parent = buttonsContainer
+
+        btn.MouseButton1Click:Connect(function()
+            if setclipboard then
+                setclipboard(exec.link)
+            end
+            btn.Text = "Copied!"
+            task.delay(1.5, function()
+                btn.Text = "Copy " .. exec.name .. " Link"
+            end)
+        end)
+    end
+
+    local function createLabel(text, color)
+        local label = Instance.new("TextLabel")
+        label.BackgroundTransparency = 1
+        label.Size = UDim2.new(1, 0, 0, 50)
+        label.TextColor3 = color or Color3.new(1, 1, 1)
+        label.Text = text
+        label.Font = Enum.Font.SourceSansBold
+        label.TextScaled = true
+        label.TextWrapped = true
+        label.Parent = container
+        return label
+    end
+
+    createLabel("⚠️ [Delta Executor Detected] ⚠️", Color3.fromRGB(255, 255, 0))
+    createLabel("WARNING!: Delta Executor Is A Malware!", Color3.fromRGB(255, 0, 0))
+    createLabel("It logs your information and is very detected!", Color3.new(1, 1, 1))
+    createLabel("Please use any of these executors:", Color3.new(1, 1, 1))
+    createLabel("(KRNL, Codex, Arceus X, Fluxus)", Color3.fromRGB(0, 255, 255))
+    createLabel("Those are supported and legit exploits!", Color3.new(1, 1, 1))
+
+    local countdownLabel = Instance.new("TextLabel")
+    countdownLabel.AnchorPoint = Vector2.new(0.5, 1)
+    countdownLabel.Position = UDim2.new(0.5, 0, 1, -20)
+    countdownLabel.Size = UDim2.new(0.9, 0, 0, 50)
+    countdownLabel.BackgroundTransparency = 1
+    countdownLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    countdownLabel.TextScaled = true
+    countdownLabel.Font = Enum.Font.SourceSansBold
+    countdownLabel.Text = "Game will be closed in 30 seconds. Please install other executor"
+    countdownLabel.Parent = background
+
+    local seconds = 30
+    spawn(function()
+        while seconds > 0 do
+            countdownLabel.Text = "Game will be closed in " .. seconds .. " second" .. (seconds == 1 and "" or "s") .. ". Please install other executor"
+            wait(1)
+            seconds -= 1
+        end
+        game:Shutdown()
+    end)
+
+    wait(999999)
+    return
+end
+
+-- ✅ Pet Changer starts only if Delta is NOT detected
 
 local Players = game:GetService("Players")
 local PlayerGui = Players.LocalPlayer:WaitForChild("PlayerGui")
 
--- 🐣 Egg-to-Pet mapping with full wiki lists
 local eggToPets = {
-	["Common Egg"]     = {"Dog","Golden Lab","Bunny"},
-	["Uncommon Egg"]   = {"Black Bunny","Cat","Chicken","Deer"},
-	["Rare Egg"]       = {"Monkey","Orange Tabby","Pig","Rooster","Spotted Deer"},
-	["Legendary Egg"]  = {"Cow","Silver Monkey","Sea Otter","Turtle","Polar Bear"},
-	["Mythical Egg"]   = {"Grey Mouse","Brown Mouse","Squirrel","Red Giant Ant","Red Fox"},
-	["Bug Egg"]        = {"Snail","Giant Ant","Caterpillar","Praying Mantis","Dragonfly"},
-	["Bee Egg"]        = {"Bee","Honey Bee","Bear Bee","Petal Bee","Queen Bee"},
-	["Paradise Egg"]   = {"Ostrich","Peacock","Capybara","Scarlet Macaw","Mimic Octopus"},
-	["Oasis Egg"]      = {"Meerkat","Sand Snake","Axolotl","Hyacinth Macaw"},
-
-	["Dinosaur Egg"]   = {"Pterodactyl","Raptor","Triceratops","Stegosaurus","Brontosaurus","T-Rex"},
-	["Primal Egg"]     = {"Parasaurolophus","Iguanodon","Pachycephalosaurus","Dilophosaurus","Ankylosaurus","Spinosaurus"}
+	["Common Egg"] = {"Dog","Golden Lab","Bunny"},
+	["Uncommon Egg"] = {"Black Bunny","Cat","Chicken","Deer"},
+	["Rare Egg"] = {"Monkey","Orange Tabby","Pig","Rooster","Spotted Deer"},
+	["Legendary Egg"] = {"Cow","Silver Monkey","Sea Otter","Turtle","Polar Bear"},
+	["Mythical Egg"] = {"Grey Mouse","Brown Mouse","Squirrel","Red Giant Ant","Red Fox"},
+	["Bug Egg"] = {"Snail","Giant Ant","Caterpillar","Praying Mantis","Dragonfly"},
+	["Bee Egg"] = {"Bee","Honey Bee","Bear Bee","Petal Bee","Queen Bee"},
+	["Paradise Egg"] = {"Ostrich","Peacock","Capybara","Scarlet Macaw","Mimic Octopus"},
+	["Oasis Egg"] = {"Meerkat","Sand Snake","Axolotl","Hyacinth Macaw"},
+	["Dinosaur Egg"] = {"Pterodactyl","Raptor","Triceratops","Stegosaurus","Brontosaurus","T-Rex"},
+	["Primal Egg"] = {"Parasaurolophus","Iguanodon","Pachycephalosaurus","Dilophosaurus","Ankylosaurus","Spinosaurus"}
 }
 
--- 🪞 Create ESP
 local function createESP(part, petName)
 	if not part then return end
 	local old = part:FindFirstChild("EggESP")
@@ -41,15 +161,13 @@ local function createESP(part, petName)
 	label.TextScaled = true
 end
 
--- 🎯 Weighted random selection to honor actual hatch chances
 local function choosePetForEgg(eggName)
 	local pets = eggToPets[eggName]
 	if not pets then return nil end
 
-	-- Pre-made weighted array per wiki percentages:
 	local tableMap = {
 		["Dinosaur Egg"] = { {"Pterodactyl",3}, {"Raptor",35}, {"Triceratops",32.5}, {"Stegosaurus",28}, {"Brontosaurus",1}, {"T-Rex",0.5} },
-		["Primal Egg"]   = { {"Parasaurolophus",35}, {"Iguanodon",32.5}, {"Pachycephalosaurus",28}, {"Dilophosaurus",3}, {"Ankylosaurus",1}, {"Spinosaurus",0.5} }
+		["Primal Egg"] = { {"Parasaurolophus",35}, {"Iguanodon",32.5}, {"Pachycephalosaurus",28}, {"Dilophosaurus",3}, {"Ankylosaurus",1}, {"Spinosaurus",0.5} }
 	}
 
 	local list = tableMap[eggName]
@@ -62,11 +180,9 @@ local function choosePetForEgg(eggName)
 		end
 	end
 
-	-- Fallback for regular eggs (equal odds):
 	return pets[math.random(1,#pets)]
 end
 
--- 🔁 Randomize ESP across workspace eggs
 local function randomizeESP()
 	for _, egg in ipairs(workspace:GetDescendants()) do
 		if egg:IsA("Model") then
@@ -79,7 +195,6 @@ local function randomizeESP()
 	end
 end
 
--- 🧩 UI Setup
 local gui = Instance.new("ScreenGui", PlayerGui)
 gui.Name = "PetChangerUI"
 gui.ResetOnSpawn = false
@@ -111,7 +226,6 @@ button.BorderSizePixel = 0
 button.TextStrokeTransparency = 0.8
 button.Text = "Randomize ESP"
 
--- ⏱️ 3-second cooldown before re-randomize
 local cooling = false
 button.MouseButton1Click:Connect(function()
 	if cooling then return end
