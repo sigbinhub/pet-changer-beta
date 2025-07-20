@@ -1,5 +1,4 @@
--- Pet Changer by AnyDev | Accurate Dinosaur & Primal Egg Support
-
+-- Pet Changer by AnyDev | Accurate Dinosaur, Primal & Zen Egg Support
 local Players = game:GetService("Players")
 local PlayerGui = Players.LocalPlayer:WaitForChild("PlayerGui")
 
@@ -14,9 +13,9 @@ local eggToPets = {
 	["Bee Egg"]        = {"Bee","Honey Bee","Bear Bee","Petal Bee","Queen Bee"},
 	["Paradise Egg"]   = {"Ostrich","Peacock","Capybara","Scarlet Macaw","Mimic Octopus"},
 	["Oasis Egg"]      = {"Meerkat","Sand Snake","Axolotl","Hyacinth Macaw"},
-
 	["Dinosaur Egg"]   = {"Pterodactyl","Raptor","Triceratops","Stegosaurus","Brontosaurus","T-Rex"},
-	["Primal Egg"]     = {"Parasaurolophus","Iguanodon","Pachycephalosaurus","Dilophosaurus","Ankylosaurus","Spinosaurus"}
+	["Primal Egg"]     = {"Parasaurolophus","Iguanodon","Pachycephalosaurus","Dilophosaurus","Ankylosaurus","Spinosaurus"},
+	["Zen Egg"]        = {"Shiba Inu","Nihonzaru","Tanuki","Tanchozuru","Kappa","Kitsune"}
 }
 
 -- 🪞 Create ESP
@@ -24,13 +23,11 @@ local function createESP(part, petName)
 	if not part then return end
 	local old = part:FindFirstChild("EggESP")
 	if old then old:Destroy() end
-
 	local gui = Instance.new("BillboardGui", part)
 	gui.Name = "EggESP"
 	gui.Size = UDim2.new(0,120,0,40)
 	gui.StudsOffset = Vector3.new(0,2.5,0)
 	gui.AlwaysOnTop = true
-
 	local label = Instance.new("TextLabel", gui)
 	label.Size = UDim2.new(1,0,1,0)
 	label.BackgroundTransparency = 1
@@ -45,13 +42,32 @@ end
 local function choosePetForEgg(eggName)
 	local pets = eggToPets[eggName]
 	if not pets then return nil end
-
-	-- Pre-made weighted array per wiki percentages:
 	local tableMap = {
-		["Dinosaur Egg"] = { {"Pterodactyl",3}, {"Raptor",35}, {"Triceratops",32.5}, {"Stegosaurus",28}, {"Brontosaurus",1}, {"T-Rex",0.5} },
-		["Primal Egg"]   = { {"Parasaurolophus",35}, {"Iguanodon",32.5}, {"Pachycephalosaurus",28}, {"Dilophosaurus",3}, {"Ankylosaurus",1}, {"Spinosaurus",0.5} }
+		["Dinosaur Egg"] = {
+			{"Pterodactyl", 3},
+			{"Raptor", 35},
+			{"Triceratops", 32.5},
+			{"Stegosaurus", 28},
+			{"Brontosaurus", 1},
+			{"T-Rex", 0.5}
+		},
+		["Primal Egg"] = {
+			{"Parasaurolophus", 35},
+			{"Iguanodon", 32.5},
+			{"Pachycephalosaurus", 28},
+			{"Dilophosaurus", 3},
+			{"Ankylosaurus", 1},
+			{"Spinosaurus", 0.5}
+		},
+		["Zen Egg"] = {
+			{"Shiba Inu", 40},
+			{"Nihonzaru", 32},
+			{"Tanuki", 20.82},
+			{"Tanchozuru", 4.6},
+			{"Kappa", 3.5},
+			{"Kitsune", 0.08}
+		}
 	}
-
 	local list = tableMap[eggName]
 	if list then
 		local roll = math.random() * 100
@@ -61,9 +77,8 @@ local function choosePetForEgg(eggName)
 			if roll <= sum then return entry[1] end
 		end
 	end
-
-	-- Fallback for regular eggs (equal odds):
-	return pets[math.random(1,#pets)]
+	-- Equal chance fallback for eggs without weighted data
+	return pets[math.random(1, #pets)]
 end
 
 -- 🔁 Randomize ESP across workspace eggs
@@ -122,4 +137,3 @@ button.MouseButton1Click:Connect(function()
 	button.Text = "Randomize ESP"
 	cooling = false
 end)
-
